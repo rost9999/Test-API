@@ -1,0 +1,18 @@
+{
+  "name": "admin/test-api",
+  "autoload": {
+    "psr-4": {
+      "": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Rostyslav Borzunov",
+      "email": "wr2st12@gmail.com"
+    }
+  ],
+  "require": {
+    "ext-pdo": "*",
+    "ext-json": "*"
+  }
+}
