@@ -8,15 +8,17 @@ use PDO;
 class ProductRepository
 {
     private PDO $pdo;
+    private int $count = 5;
 
     public function __construct()
     {
         $this->pdo = DbConnection::getInstance();
     }
 
-    public function getAll(): array
+    public function getAll($page, $orderBy, $orderType): array
     {
-        $stmt = $this->pdo->prepare('SELECT * FROM products');
+        $offset = $page * $this->count;
+        $stmt = $this->pdo->prepare("SELECT * FROM products ORDER BY $orderBy $orderType LIMIT $this->count OFFSET $offset");
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -28,15 +30,17 @@ class ProductRepository
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function searchProducts($filters)
+    public function searchProducts($filters, $page, $orderBy, $orderType): array
     {
-        $stringFilter = '';
+        $offset = $page * $this->count;
+        $filtersString = [];
         foreach ($filters as $key => $item) {
-            $filters .= $key .' = :'.$item;
+            $filtersString[] = "$key = :$key";
         }
-        $stmt = $this->pdo->prepare("SELECT * FROM products WHERE $colum LIKE :keyword");
-        $stmt = $this->pdo->
-        $stmt->execute(['keyword' => "%$keyword%"]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $filtersString = implode(' and ', $filtersString);
+        $stmt = $this->pdo->prepare("SELECT * FROM products WHERE $filtersString ORDER BY $orderBy $orderType LIMIT $this->count OFFSET $offset");
+        $stmt->execute($filters);
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $data;
     }
 }

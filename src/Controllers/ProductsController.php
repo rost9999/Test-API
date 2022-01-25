@@ -14,20 +14,21 @@ class ProductsController
     }
 
 
-    public function products($id = null): array
+    public function getProduct($id): array
     {
-        if ($id == null) {
-            $products = $this->productRepository->getAll();
-        } else {
-            $products = $this->productRepository->getProduct($id);
-        }
+        $products = $this->productRepository->getProduct($id);
         return $products;
     }
 
-    public function search($filters)
+    public function getProducts($page, $orderBy, $orderType): array
     {
+        $products = $this->productRepository->getAll($page, $orderBy, $orderType);
+        return $products;
+    }
 
-        $products = $this->search($colum,$keyword);
+    public function search($filters, $page, $orderBy, $orderType): array
+    {
+        $products = $this->productRepository->searchProducts($filters, $page, $orderBy, $orderType);
         return $products;
     }
 
