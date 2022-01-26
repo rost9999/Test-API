@@ -6,7 +6,7 @@ use repositories\ProductRepository;
 
 class ProductsController
 {
-    protected ProductRepository $productRepository;
+    private ProductRepository $productRepository;
 
     public function __construct()
     {

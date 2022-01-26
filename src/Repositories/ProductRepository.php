@@ -21,7 +21,7 @@ class ProductRepository
     /**
      * Return all products
      *
-     * @param int $pageID
+     * @param int    $pageID
      * @param string $orderBy
      * @param string $orderType
      *
@@ -59,8 +59,8 @@ class ProductRepository
     /**
      * Returns products by filter
      *
-     * @param array $filters
-     * @param int $pageID
+     * @param array  $filters
+     * @param int    $pageID
      * @param string $orderBy
      * @param string $orderType
      *
