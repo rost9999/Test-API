@@ -10,6 +10,9 @@ class ProductRepository
     private PDO $pdo;
     const PER_PAGE = 5;
 
+    /**
+     *  Connect to DB
+     */
     public function __construct()
     {
         $this->pdo = DbConnection::getInstance();
@@ -18,15 +21,15 @@ class ProductRepository
     /**
      * Return all products
      *
-     * @param int $page
+     * @param int $pageID
      * @param string $orderBy
      * @param string $orderType
      *
      * @return array
      */
-    public function getAll(int $page, string $orderBy, string $orderType): array
+    public function getAll(int $pageID, string $orderBy, string $orderType): array
     {
-        $offset = ($page - 1) * self::PER_PAGE;
+        $offset = ($pageID - 1) * self::PER_PAGE;
 
         $stmt = $this->pdo->prepare('SELECT * FROM products ORDER BY :orderby :ordertype LIMIT :limit OFFSET :offset');
         $stmt->bindValue(':orderby', $orderBy);
@@ -41,32 +44,31 @@ class ProductRepository
     /**
      * Return one product by id
      *
-     * @param int $id
+     * @param int $productID
      *
      * @return array
      */
-    public function getProduct(int $id): array
+    public function getProduct(int $productID): array
     {
         $stmt = $this->pdo->prepare('SELECT * FROM products WHERE id = :id');
-        $stmt->execute(['id' => $id]);
+        $stmt->execute(['id' => $productID]);
 
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
      * Returns products by filter
      *
      * @param array $filters
-     * @param int $page
+     * @param int $pageID
      * @param string $orderBy
      * @param string $orderType
      *
      * @return array
      */
-
-    public function searchProducts(array $filters, int $page, string $orderBy, string $orderType): array
+    public function searchProducts(array $filters, int $pageID, string $orderBy, string $orderType): array
     {
-        $offset = ($page - 1) * self::PER_PAGE;
+        $offset = ($pageID - 1) * self::PER_PAGE;
 
         $filtersString = [];
         foreach ($filters as $key => $item) {
