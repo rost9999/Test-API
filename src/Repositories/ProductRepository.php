@@ -18,12 +18,12 @@ class ProductRepository
     public function getAll($page, $orderBy, $orderType): array
     {
         $offset = ($page - 1) * self::PER_PAGE;
-        $stmt = $this->pdo->prepare('SELECT * FROM products ORDER BY :orderby :ordertype LIMIT 5 OFFSET 0');
-        $stmt->execute([
-            'orderby' => $orderBy,
-            'ordertype' => $orderType,
-//            'offset' => $offset,
-        ]);
+        $stmt = $this->pdo->prepare('SELECT * FROM products ORDER BY :orderby :ordertype LIMIT :limit OFFSET :offset');
+        $stmt->bindValue(':orderby', $orderBy);
+        $stmt->bindValue(':ordertype', $orderType);
+        $stmt->bindValue(':limit', (int)self::PER_PAGE, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -42,7 +42,7 @@ class ProductRepository
             $filtersString[] = "$key = :$key";
         }
         $filtersString = implode(' and ', $filtersString);
-        $stmt = $this->pdo->prepare("SELECT * FROM products WHERE $filtersString ORDER BY $orderBy $orderType LIMIT 5 OFFSET $offset");
+        $stmt = $this->pdo->prepare("SELECT * FROM products WHERE $filtersString ORDER BY $orderBy $orderType LIMIT " . self::PER_PAGE . " OFFSET $offset");
         $stmt->execute($filters);
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $data;
