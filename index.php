@@ -7,19 +7,18 @@ require_once "./vendor/autoload.php";
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
-$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$uri = explode('/', $uri);
-$method = $uri[2] ?? null;
-$productID = $uri[3] ?? null;
-$filters = $_REQUEST["filter"] ?? null;
-
-$pageID = $_REQUEST["page"] ?? 1;
-$orderBy = $_REQUEST["orderby"] ?? 'id';
-$orderType = $_REQUEST["ordertype"] ?? 'ASC';
+$uri        = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$uri        = explode('/', $uri);
+$method     = $uri[2] ?? null;
+$productID  = $uri[3] ?? null;
+$filters    = $_REQUEST["filter"] ?? null;
+$pageID     = $_REQUEST["page"] ?? 1;
+$orderBy    = $_REQUEST["orderby"] ?? 'id';
+$orderType  = $_REQUEST["ordertype"] ?? 'ASC';
 
 $controller = new ProductsController();
 
-$data = [];
+$data   = [];
 
 if ($productID) {
     $data = $controller->getProduct($productID);
