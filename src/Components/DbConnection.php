@@ -13,6 +13,7 @@ class DbConnection
         if (!self::$instance) {
             self::$instance = new PDO('mysql:host=localhost;dbname=test-api', 'root', '');
         }
+
         return self::$instance;
     }
 }

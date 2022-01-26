@@ -15,36 +15,68 @@ class ProductRepository
         $this->pdo = DbConnection::getInstance();
     }
 
-    public function getAll($page, $orderBy, $orderType): array
+    /**
+     * Return all products
+     *
+     * @param int $page
+     * @param string $orderBy
+     * @param string $orderType
+     *
+     * @return array
+     */
+    public function getAll(int $page, string $orderBy, string $orderType): array
     {
         $offset = ($page - 1) * self::PER_PAGE;
+
         $stmt = $this->pdo->prepare('SELECT * FROM products ORDER BY :orderby :ordertype LIMIT :limit OFFSET :offset');
         $stmt->bindValue(':orderby', $orderBy);
         $stmt->bindValue(':ordertype', $orderType);
         $stmt->bindValue(':limit', (int)self::PER_PAGE, PDO::PARAM_INT);
         $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
         $stmt->execute();
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Return one product by id
+     *
+     * @param int $id
+     *
+     * @return array
+     */
     public function getProduct(int $id): array
     {
         $stmt = $this->pdo->prepare('SELECT * FROM products WHERE id = :id');
         $stmt->execute(['id' => $id]);
+
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Returns products by filter
+     *
+     * @param array $filters
+     * @param int $page
+     * @param string $orderBy
+     * @param string $orderType
+     *
+     * @return array
+     */
 
     public function searchProducts(array $filters, int $page, string $orderBy, string $orderType): array
     {
         $offset = ($page - 1) * self::PER_PAGE;
+
         $filtersString = [];
         foreach ($filters as $key => $item) {
             $filtersString[] = "$key = :$key";
         }
         $filtersString = implode(' and ', $filtersString);
+
         $stmt = $this->pdo->prepare("SELECT * FROM products WHERE $filtersString ORDER BY $orderBy $orderType LIMIT " . self::PER_PAGE . " OFFSET $offset");
         $stmt->execute($filters);
-        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $data;
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

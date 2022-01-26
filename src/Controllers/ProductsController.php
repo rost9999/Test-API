@@ -15,19 +15,16 @@ class ProductsController
 
     public function getProduct(int $id): array
     {
-        $products = $this->productRepository->getProduct($id);
-        return $products;
+        return $this->productRepository->getProduct($id);
     }
 
     public function getProducts(int $page, string $orderBy, string $orderType): array
     {
-        $products = $this->productRepository->getAll($page, $orderBy, $orderType);
-        return $products;
+        return $this->productRepository->getAll($page, $orderBy, $orderType);
     }
 
     public function search(array $filters, int $page, string $orderBy, string $orderType): array
     {
-        $products = $this->productRepository->searchProducts($filters, $page, $orderBy, $orderType);
-        return $products;
+        return $this->productRepository->searchProducts($filters, $page, $orderBy, $orderType);
     }
 }
